@@ -52,8 +52,8 @@ int main() {
 	printf("The framebuffer device was mapped to memory successfully.\n");
 
 	//read char
-	int charlength = 60;
-	int charheight = 30;
+	int charlength = 120;
+	int charheight = 60;
 
 	char **pixelmap = (char **)malloc(charheight * sizeof(char *));
 	for (int i=0; i<charheight; i++)
@@ -69,11 +69,11 @@ int main() {
 	fclose;
 
 	// Figure out where in memory to put the pixel
-	int first_y = 100; //y awal;
-	int first_x = (int)(vinfo.xres)-100;
-	int current_y_pesawat = first_y; //y untuk karakter sementara
-	int current_x_pesawat = first_x; //x untuk karakter sementara
-	for (int i = 0; i < 15; i++) {
+	int first_y_pesawat = 100; //y awal;
+	int first_x_pesawat = (int)(vinfo.xres)-200;
+	int current_y_pesawat = first_y_pesawat; //y untuk karakter sementara
+	int current_x_pesawat = first_x_pesawat; //x untuk karakter sementara
+	for (int i = 0; i < 25; i++) {
 		//menghitamkan layar
 		for (y = 0; y < vinfo.yres; y++) {
 			for (x = 0; x < vinfo.xres; x++) {
@@ -112,7 +112,7 @@ int main() {
 	}
 
 	munmap(fbp, screensize);
-	
+
 	close(fbfd);
 	
 	return 0;
