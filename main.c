@@ -71,21 +71,38 @@ int main() {
 	// Figure out where in memory to put the pixel
 	int first_y_pesawat = 100; //y awal;
 	int first_x_pesawat = (int)(vinfo.xres)-200;
+	int first_y_blok1 = (int)(vinfo.yres)-200;
+	int first_x_blok1 = (int)(vinfo.xres)/2;
+	int height_blok1 = 80;
+	int width_blok1 = 20;
 	int current_y_pesawat = first_y_pesawat; //y untuk karakter sementara
 	int current_x_pesawat = first_x_pesawat; //x untuk karakter sementara
+	int current_y_blok1 = first_y_blok1;
+	int current_x_blok1 = first_x_blok1;
 	for (int i = 0; i < 25; i++) {
 		//menghitamkan layar
 		for (y = 0; y < vinfo.yres; y++) {
 			for (x = 0; x < vinfo.xres; x++) {
 				location = (x+vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
 						(y+vinfo.yoffset) * finfo.line_length;
-				*(fbp + location) = 0;        // hitam
-				*(fbp + location + 1) = 0;     // hitam
-				*(fbp + location + 2) = 0;    // hitam
-				*(fbp + location + 3) = 0;      // No transparency
+				/*
+				if ((y >= (current_y_blok1 - height_blok1)) || (y <= (current_y_blok1 + height_blok1))) {
+					if ((x >= (current_x_blok1 - width_blok1)) || ((x <= (current_x_blok1 + width_blok1)))) {
+						*(fbp + location) = 0;        // kuning
+						*(fbp + location + 1) = 255;     // kuning
+						*(fbp + location + 2) = 255;    // kuning
+						*(fbp + location + 3) = 0;      // No transparency
+					}			
+				} else {
+					*/
+					*(fbp + location) = 0;        // hitam
+					*(fbp + location + 1) = 0;     // hitam
+					*(fbp + location + 2) = 0;    // hitam
+					*(fbp + location + 3) = 0;      // No transparency	
+				//}
 			}
 		}
-		//menulis ke framebuffer
+		//menulis pesawat ke framebuffer
 		int max_length = (int)(vinfo.xres);
 		for (y = current_y_pesawat; y < current_y_pesawat+charheight; y++) {
 			for (x = current_x_pesawat; x < current_x_pesawat+charlength; x++) {
@@ -98,16 +115,27 @@ int main() {
 						*(fbp + location + 1) = 255;     // putih
 						*(fbp + location + 2) = 255;    // putih
 						*(fbp + location + 3) = 0;      // No transparency
-					} else {
-						*(fbp + location) = 0;        // hitam
-						*(fbp + location + 1) = 0;     // hitam
-						*(fbp + location + 2) = 0;    // hitam
+					}
+				}
+			}
+		}
+		//menggambar blok1
+		for (y = current_y_blok1; y < current_y_blok1+height_blok1; y++) {
+			if (y >= 0) {
+				for (x = current_x_blok1; x < current_x_blok1+width_blok1; x++) {
+					location = (x+vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
+							(y+vinfo.yoffset) * finfo.line_length;
+					if (vinfo.bits_per_pixel == 32) {
+						*(fbp + location) = 0;        // putih
+						*(fbp + location + 1) = 255;     // putih
+						*(fbp + location + 2) = 255;    // putih
 						*(fbp + location + 3) = 0;      // No transparency
 					}
 				}
 			}
 		}
 		current_x_pesawat -= 60;
+		current_y_blok1 -= 60;
 		usleep(1000000);
 	}
 
@@ -117,4 +145,4 @@ int main() {
 	
 	return 0;
 
- }
+}
