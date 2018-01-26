@@ -7,14 +7,59 @@
 #include <sys/mman.h>
 #include <sys/ioctl.h>
 
+typedef struct{
+    int r,g,b,a;
+} color;
+
+// INISIALISASI VARIABEL
+int layarx = 1366;
+int layary = 700;
+
+struct fb_var_screeninfo vinfo;
+struct fb_fix_screeninfo finfo;
+char *fbp = 0;
+
+color bg = {
+			 255,
+			 255,
+			 255,
+			 0
+	 };
+
+void draw_dot(int x, int y, color* c)
+{
+	if((x<1) || (x>layarx) || (y<1) || (y>layary)){
+		return ;
+	}
+
+
+    long int position = (x + vinfo.xoffset) * (vinfo.bits_per_pixel / 8) +
+       (y + vinfo.yoffset) * finfo.line_length;
+    if(vinfo.bits_per_pixel == 32){
+        *(fbp + position) = c->b;
+        *(fbp + position + 1) = c->g;
+        *(fbp + position + 2) = c->r;
+        *(fbp + position + 3) = c->a;
+    }
+    else
+    {//assume 16 bit color
+        int b = c->b;
+        int g = c->g;
+        int r = c->r;
+        unsigned short int t = r<<11 | g << 5 | b;
+        *((unsigned short int*)(fbp + position)) = t;
+    }
+}
+
 int draw_line(int x1, int y1, int x2, int y2) {
    int y = y1;
    int dy = y2 - y1;
 
    int dxdy = y2 - y1 + x1 - x2;
-   int F = y2 - y1 + x1 - x2; 
+   int F = y2 - y1 + x1 - x2;
+
    for (int x = x1; x <= x2; x++) {
-	   //draw_dot
+	   draw_dot(x,y,&bg);
 
        if (F < 0) {
            F += dy;
@@ -25,9 +70,6 @@ int draw_line(int x1, int y1, int x2, int y2) {
    }
 }
 
-struct fb_var_screeninfo vinfo;
-struct fb_fix_screeninfo finfo;
-char *fbp = 0;
 
 void clear_screen(int width, int height)
 {
@@ -145,6 +187,9 @@ int main() {
 				//}
 			}
 		}
+		int xx;
+		int yy;
+		draw_line(1000,500,1200,600);
 
 		//menulis pesawat ke framebuffer
 		int max_length = (int)(vinfo.xres);
