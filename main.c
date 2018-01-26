@@ -7,12 +7,35 @@
 #include <sys/mman.h>
 #include <sys/ioctl.h>
 
+struct fb_var_screeninfo vinfo;
+struct fb_fix_screeninfo finfo;
+char *fbp = 0;
+
+void clear_screen(int width, int height)
+{
+    int x = 0;
+    int y = 0;
+
+    for(x=0; x<width; x++)
+    {
+        for(y=0; y<height; y++)
+        {
+            long int position = (x + vinfo.xoffset) * (vinfo.bits_per_pixel / 8) +
+               (y + vinfo.yoffset) * finfo.line_length;
+            *(fbp + position) = 0;
+            *(fbp + position + 1) = 0;
+            *(fbp + position + 2) = 0;
+            *(fbp + position + 3) = 0;
+        }
+    }
+}
+
+
 int main() {
 	int fbfd = 0;
-  	struct fb_var_screeninfo vinfo;
-	struct fb_fix_screeninfo finfo;
+
 	long int screensize = 0;
-  	char *fbp = 0;
+
   	int x = 0, y = 0;
   	long int location = 0;
 
@@ -22,7 +45,7 @@ int main() {
   		perror("Error: cannot open framebuffer device");
 		exit(1);
 	}
-	
+
 	printf("The framebuffer device was opened successfully.\n");
 
 	// Get fixed screen information
@@ -54,16 +77,17 @@ int main() {
 	//read char
 	int charlength = 120;
 	int charheight = 60;
+	int i;
 
 	char **pixelmap = (char **)malloc(charheight * sizeof(char *));
-	for (int i=0; i<charheight; i++)
+	for (i=0; i<charheight; i++)
 		pixelmap[i] = (char *)malloc(charlength * sizeof(char));
-	
+
 	FILE *charmap;
 
 	//baca map untuk pixel karakter
 	charmap = fopen("pesawat.txt", "r");
-	for (int i = 0; i < charheight; i++) {
+	for (i = 0; i < charheight; i++) {
 			fscanf (charmap, "%s", pixelmap[i]);
 		}
 	fclose;
@@ -79,29 +103,30 @@ int main() {
 	int current_x_pesawat = first_x_pesawat; //x untuk karakter sementara
 	int current_y_blok1 = first_y_blok1;
 	int current_x_blok1 = first_x_blok1;
-	for (int i = 0; i < 25; i++) {
+	for (i = 0; i < 25; i++) {
 		//menghitamkan layar
-		for (y = 0; y < vinfo.yres; y++) {
+		for (y = 0; y < 760; y++) {
 			for (x = 0; x < vinfo.xres; x++) {
 				location = (x+vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
 						(y+vinfo.yoffset) * finfo.line_length;
-				/*
-				if ((y >= (current_y_blok1 - height_blok1)) || (y <= (current_y_blok1 + height_blok1))) {
-					if ((x >= (current_x_blok1 - width_blok1)) || ((x <= (current_x_blok1 + width_blok1)))) {
-						*(fbp + location) = 0;        // kuning
-						*(fbp + location + 1) = 255;     // kuning
-						*(fbp + location + 2) = 255;    // kuning
-						*(fbp + location + 3) = 0;      // No transparency
-					}			
-				} else {
-					*/
+
+				// if ((y >= (current_y_blok1 - height_blok1)) || (y <= (current_y_blok1 + height_blok1))) {
+				// 	if ((x >= (current_x_blok1 - width_blok1)) || ((x <= (current_x_blok1 + width_blok1)))) {
+				// 		*(fbp + location) = 0;        // kuning
+				// 		*(fbp + location + 1) = 255;     // kuning
+				// 		*(fbp + location + 2) = 255;    // kuning
+				// 		*(fbp + location + 3) = 0;      // No transparency
+				// 	}
+				// } else {
+
 					*(fbp + location) = 0;        // hitam
 					*(fbp + location + 1) = 0;     // hitam
 					*(fbp + location + 2) = 0;    // hitam
-					*(fbp + location + 3) = 0;      // No transparency	
+					*(fbp + location + 3) = 0;      // No transparency
 				//}
 			}
 		}
+
 		//menulis pesawat ke framebuffer
 		int max_length = (int)(vinfo.xres);
 		for (y = current_y_pesawat; y < current_y_pesawat+charheight; y++) {
@@ -142,7 +167,7 @@ int main() {
 	munmap(fbp, screensize);
 
 	close(fbfd);
-	
+
 	return 0;
 
 }
