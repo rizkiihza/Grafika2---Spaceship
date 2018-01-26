@@ -56,21 +56,33 @@ void draw_dot(int x, int y, color* c)
 }
 
 int draw_line(int x1, int y1, int x2, int y2, color* c) {
-   int y = y1;
-   int dy = y2 - y1;
+   int grad = (y2-y1)*(x2-x1);
 
-   int dxdy = y2 - y1 + x1 - x2;
-   int F = y2 - y1 + x1 - x2;
-
-   for (int x = x1; x <= x2; x++) {
-	   draw_dot(x,y,c);
-
-       if (F < 0) {
-           F += dy;
-       } else {
-           y++;
-           F += dxdy;
-       }
+   if (grad > 0) {
+    int dxdy = y2 - y1 + x1 - x2;
+    int F = y2 - y1 + x1 - x2; 
+    for (int x = x1; x <= x2; x++) {
+        draw_dot(x, y, c);
+        if (F < 0) {
+            F += dy;
+        } else {
+            y++;
+            F += dxdy;
+        }
+    }
+   } else {
+        int dxdy = y2 - y1 + x1 - x2;
+        int F = y2 - y1 + x1 - x2; 
+        for (int x = x1; x <= x2; x++) {
+            draw_dot(x, y, c);
+            if (F > 0) {
+                F += dy;
+            } else {
+                y--;
+                F += dxdy;
+            }
+        
+        }
    }
 }
 
