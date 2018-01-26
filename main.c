@@ -162,9 +162,13 @@ int main() {
 	int first_y_blok1 = (int)(vinfo.yres)-200;
 	int first_x_blok1 = (int)(vinfo.xres)/2;
 
-	//BLOK KANAN
+	//BLOK KIRI
 	int kiri_y_blok1 = (int)(vinfo.yres)-200;
 	int kiri_x_blok1 = (int)(vinfo.xres)/2;
+
+	//BLOK KANAN
+	int kanan_y_blok1 = (int)(vinfo.yres)-200;
+	int kanan_x_blok1 = (int)(vinfo.xres)/2;
 
 	int height_blok1 = 80;
 	int width_blok1 = 20;
@@ -197,11 +201,18 @@ int main() {
 		}
 
 		// 	BLOK KIRI
+		// for(int ii = 0; ii < 20; ii++) {
+		// 	draw_line(kiri_x_blok1+ii-100, kiri_y_blok1, kiri_x_blok1+ii, kiri_y_blok1+200, &green);
+		// }
+		// kiri_x_blok1 -= 30;
+		// kiri_y_blok1 -= 60;
+
+		// 	BLOK KANAN
 		for(int ii = 0; ii < 20; ii++) {
-			draw_line(kiri_x_blok1+ii-100, kiri_y_blok1, kiri_x_blok1+ii, kiri_y_blok1+200, &green);
+			draw_line(kanan_x_blok1+ii, kanan_y_blok1, kanan_x_blok1+ii-100, kanan_y_blok1+200, &white);
 		}
-		kiri_x_blok1 -= 30;
-		kiri_y_blok1 -= 60;
+		kanan_x_blok1 += 30;
+		kanan_y_blok1 -= 60;
 
 		//menulis pesawat ke framebuffer
 		int max_length = (int)(vinfo.xres);
