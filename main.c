@@ -7,6 +7,24 @@
 #include <sys/mman.h>
 #include <sys/ioctl.h>
 
+int draw_line(int x1, int y1, int x2, int y2) {
+   int y = y1;
+   int dy = y2 - y1;
+
+   int dxdy = y2 - y1 + x1 - x2;
+   int F = y2 - y1 + x1 - x2; 
+   for (int x = x1; x <= x2; x++) {
+	   //draw_dot
+
+       if (F < 0) {
+           F += dy;
+       } else {
+           y++;
+           F += dxdy;
+       }
+   }
+}
+
 int main() {
 	int fbfd = 0;
   	struct fb_var_screeninfo vinfo;
@@ -73,6 +91,7 @@ int main() {
 	int first_x_pesawat = (int)(vinfo.xres)-200;
 	int first_y_blok1 = (int)(vinfo.yres)-200;
 	int first_x_blok1 = (int)(vinfo.xres)/2;
+
 	int height_blok1 = 80;
 	int width_blok1 = 20;
 	int current_y_pesawat = first_y_pesawat; //y untuk karakter sementara
@@ -119,6 +138,7 @@ int main() {
 				}
 			}
 		}
+
 		//menggambar blok1
 		for (y = current_y_blok1; y < current_y_blok1+height_blok1; y++) {
 			if (y >= 0) {
