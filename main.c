@@ -27,7 +27,7 @@ color white = {
 	 };
 
 color green = {
-	255,0,255,0
+	0,255,255,0
 };
 
 void draw_dot(int x, int y, color* c)
