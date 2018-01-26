@@ -221,7 +221,7 @@ int main() {
 		kiri_y_blok1 -= 60;
 
 		// 	BLOK KANAN
-		for(int ii = 0; ii < 20; ii++) {
+		for(int ii = 0; ii < 10; ii++) {
 			draw_line(kanan_x_blok1+ii, kanan_y_blok1+100, kanan_x_blok1+ii+100, kanan_y_blok1-100, &white);
 		}
 		kanan_x_blok1 += 30;

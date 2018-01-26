@@ -5,10 +5,8 @@ using namespace std;
 char gambar[32][32];
 
 int main() {
-   int x1 = 1;
-   int y1 = 7;
-   int x2 = 8;
-   int y2 = 1;
+   int x1 = 1;  int y1 = 7;
+   int x2 = 8;  int y2 = 1;
 
    int y = y1;
    int dy = y2 - y1;
