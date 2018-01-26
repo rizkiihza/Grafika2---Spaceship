@@ -57,10 +57,11 @@ void draw_dot(int x, int y, color* c)
 
 int draw_line(int x1, int y1, int x2, int y2, color* c) {
    int grad = (y2-y1)*(x2-x1);
-
+	 int y = y1;
+	 int dy = y2 - y1;
    if (grad > 0) {
     int dxdy = y2 - y1 + x1 - x2;
-    int F = y2 - y1 + x1 - x2; 
+    int F = y2 - y1 + x1 - x2;
     for (int x = x1; x <= x2; x++) {
         draw_dot(x, y, c);
         if (F < 0) {
@@ -72,7 +73,7 @@ int draw_line(int x1, int y1, int x2, int y2, color* c) {
     }
    } else {
         int dxdy = y2 - y1 + x1 - x2;
-        int F = y2 - y1 + x1 - x2; 
+        int F = y2 - y1 + x1 - x2;
         for (int x = x1; x <= x2; x++) {
             draw_dot(x, y, c);
             if (F > 0) {
@@ -81,7 +82,7 @@ int draw_line(int x1, int y1, int x2, int y2, color* c) {
                 y--;
                 F += dxdy;
             }
-        
+
         }
    }
 }
@@ -213,15 +214,15 @@ int main() {
 		}
 
 		// 	BLOK KIRI
-		// for(int ii = 0; ii < 20; ii++) {
-		// 	draw_line(kiri_x_blok1+ii-100, kiri_y_blok1, kiri_x_blok1+ii, kiri_y_blok1+200, &green);
-		// }
-		// kiri_x_blok1 -= 30;
-		// kiri_y_blok1 -= 60;
+		for(int ii = 0; ii < 20; ii++) {
+			draw_line(kiri_x_blok1+ii-100, kiri_y_blok1, kiri_x_blok1+ii, kiri_y_blok1+200, &green);
+		}
+		kiri_x_blok1 -= 30;
+		kiri_y_blok1 -= 60;
 
 		// 	BLOK KANAN
 		for(int ii = 0; ii < 20; ii++) {
-			draw_line(kanan_x_blok1+ii, kanan_y_blok1, kanan_x_blok1+ii-100, kanan_y_blok1+200, &white);
+			draw_line(kanan_x_blok1+ii, kanan_y_blok1+100, kanan_x_blok1+ii+100, kanan_y_blok1-100, &white);
 		}
 		kanan_x_blok1 += 30;
 		kanan_y_blok1 -= 60;
