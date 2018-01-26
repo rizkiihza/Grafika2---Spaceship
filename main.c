@@ -198,7 +198,7 @@ int main() {
 
 		// 	BLOK KIRI
 		for(int ii = 0; ii < 20; ii++) {
-			draw_line(kiri_x_blok1+ii, kiri_y_blok1, kiri_x_blok1+ii + 100, kiri_y_blok1 + 200, &green);
+			draw_line(kiri_x_blok1+ii-100, kiri_y_blok1, kiri_x_blok1+ii, kiri_y_blok1+200, &green);
 		}
 		kiri_x_blok1 -= 30;
 		kiri_y_blok1 -= 60;
@@ -238,7 +238,7 @@ int main() {
 		}
 		current_x_pesawat -= 60;
 		current_y_blok1 -= 60;
-		usleep(1000000);
+		usleep(500000);
 	}
 
 	munmap(fbp, screensize);
