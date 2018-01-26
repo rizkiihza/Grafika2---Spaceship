@@ -193,8 +193,8 @@ int main() {
 		}
 		
 		// 	BLOK KIRI 
-		for(int ii = 0; ii < 20; i++) {
-			draw_line(kiri_x_blok1+ii, kiri_y_blok1, kiri_x_blok1+ii + 100, kiri_y_blok1 + 200)
+		for(int ii = 0; ii < 20; ii++) {
+			draw_line(kiri_x_blok1+ii-100, kiri_y_blok1-200, kiri_x_blok1+ii, kiri_y_blok1);
 		}
 		kiri_x_blok1 -= 30;
 		kiri_y_blok1 -= 60;
