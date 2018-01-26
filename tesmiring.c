@@ -102,23 +102,6 @@ int main() {
 				//}
 			}
 		}
-		//menulis pesawat ke framebuffer
-		int max_length = (int)(vinfo.xres);
-		for (y = current_y_pesawat; y < current_y_pesawat+charheight; y++) {
-			for (x = current_x_pesawat; x < current_x_pesawat+charlength; x++) {
-				location = (x+vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
-						(y+vinfo.yoffset) * finfo.line_length;
-
-				if (vinfo.bits_per_pixel == 32) {
-					if (pixelmap[y-current_y_pesawat][x-current_x_pesawat] == '*') {
-						*(fbp + location) = 255;        // putih
-						*(fbp + location + 1) = 255;     // putih
-						*(fbp + location + 2) = 255;    // putih
-						*(fbp + location + 3) = 0;      // No transparency
-					}
-				}
-			}
-		}
 		//menggambar blok1
 		for (y = current_y_blok1; y < current_y_blok1+height_blok1; y++) {
 			if (y >= 0) {
