@@ -7,12 +7,95 @@
 #include <sys/mman.h>
 #include <sys/ioctl.h>
 
+typedef struct{
+    int r,g,b,a;
+} color;
+
+// INISIALISASI VARIABEL
+int layarx = 1366;
+int layary = 700;
+
+struct fb_var_screeninfo vinfo;
+struct fb_fix_screeninfo finfo;
+char *fbp = 0;
+
+color bg = {
+			 255,
+			 255,
+			 255,
+			 0
+	 };
+
+void draw_dot(int x, int y, color* c)
+{
+	if((x<1) || (x>layarx) || (y<1) || (y>layary)){
+		return ;
+	}
+
+
+    long int position = (x + vinfo.xoffset) * (vinfo.bits_per_pixel / 8) +
+       (y + vinfo.yoffset) * finfo.line_length;
+    if(vinfo.bits_per_pixel == 32){
+        *(fbp + position) = c->b;
+        *(fbp + position + 1) = c->g;
+        *(fbp + position + 2) = c->r;
+        *(fbp + position + 3) = c->a;
+    }
+    else
+    {//assume 16 bit color
+        int b = c->b;
+        int g = c->g;
+        int r = c->r;
+        unsigned short int t = r<<11 | g << 5 | b;
+        *((unsigned short int*)(fbp + position)) = t;
+    }
+}
+
+int draw_line(int x1, int y1, int x2, int y2) {
+   int y = y1;
+   int dy = y2 - y1;
+
+   int dxdy = y2 - y1 + x1 - x2;
+   int F = y2 - y1 + x1 - x2;
+
+   for (int x = x1; x <= x2; x++) {
+	   draw_dot(x,y,&bg);
+
+       if (F < 0) {
+           F += dy;
+       } else {
+           y++;
+           F += dxdy;
+       }
+   }
+}
+
+
+void clear_screen(int width, int height)
+{
+    int x = 0;
+    int y = 0;
+
+    for(x=0; x<width; x++)
+    {
+        for(y=0; y<height; y++)
+        {
+            long int position = (x + vinfo.xoffset) * (vinfo.bits_per_pixel / 8) +
+               (y + vinfo.yoffset) * finfo.line_length;
+            *(fbp + position) = 0;
+            *(fbp + position + 1) = 0;
+            *(fbp + position + 2) = 0;
+            *(fbp + position + 3) = 0;
+        }
+    }
+}
+
+
 int main() {
 	int fbfd = 0;
-  	struct fb_var_screeninfo vinfo;
-	struct fb_fix_screeninfo finfo;
+
 	long int screensize = 0;
-  	char *fbp = 0;
+
   	int x = 0, y = 0;
   	long int location = 0;
 
@@ -22,7 +105,7 @@ int main() {
   		perror("Error: cannot open framebuffer device");
 		exit(1);
 	}
-	
+
 	printf("The framebuffer device was opened successfully.\n");
 
 	// Get fixed screen information
@@ -54,16 +137,17 @@ int main() {
 	//read char
 	int charlength = 120;
 	int charheight = 60;
+	int i;
 
 	char **pixelmap = (char **)malloc(charheight * sizeof(char *));
-	for (int i=0; i<charheight; i++)
+	for (i=0; i<charheight; i++)
 		pixelmap[i] = (char *)malloc(charlength * sizeof(char));
-	
+
 	FILE *charmap;
 
 	//baca map untuk pixel karakter
 	charmap = fopen("pesawat.txt", "r");
-	for (int i = 0; i < charheight; i++) {
+	for (i = 0; i < charheight; i++) {
 			fscanf (charmap, "%s", pixelmap[i]);
 		}
 	fclose;
@@ -73,35 +157,40 @@ int main() {
 	int first_x_pesawat = (int)(vinfo.xres)-200;
 	int first_y_blok1 = (int)(vinfo.yres)-200;
 	int first_x_blok1 = (int)(vinfo.xres)/2;
+
 	int height_blok1 = 80;
 	int width_blok1 = 20;
 	int current_y_pesawat = first_y_pesawat; //y untuk karakter sementara
 	int current_x_pesawat = first_x_pesawat; //x untuk karakter sementara
 	int current_y_blok1 = first_y_blok1;
 	int current_x_blok1 = first_x_blok1;
-	for (int i = 0; i < 25; i++) {
+	for (i = 0; i < 25; i++) {
 		//menghitamkan layar
-		for (y = 0; y < vinfo.yres; y++) {
+		for (y = 0; y < 760; y++) {
 			for (x = 0; x < vinfo.xres; x++) {
 				location = (x+vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
 						(y+vinfo.yoffset) * finfo.line_length;
-				/*
-				if ((y >= (current_y_blok1 - height_blok1)) || (y <= (current_y_blok1 + height_blok1))) {
-					if ((x >= (current_x_blok1 - width_blok1)) || ((x <= (current_x_blok1 + width_blok1)))) {
-						*(fbp + location) = 0;        // kuning
-						*(fbp + location + 1) = 255;     // kuning
-						*(fbp + location + 2) = 255;    // kuning
-						*(fbp + location + 3) = 0;      // No transparency
-					}			
-				} else {
-					*/
+
+				// if ((y >= (current_y_blok1 - height_blok1)) || (y <= (current_y_blok1 + height_blok1))) {
+				// 	if ((x >= (current_x_blok1 - width_blok1)) || ((x <= (current_x_blok1 + width_blok1)))) {
+				// 		*(fbp + location) = 0;        // kuning
+				// 		*(fbp + location + 1) = 255;     // kuning
+				// 		*(fbp + location + 2) = 255;    // kuning
+				// 		*(fbp + location + 3) = 0;      // No transparency
+				// 	}
+				// } else {
+
 					*(fbp + location) = 0;        // hitam
 					*(fbp + location + 1) = 0;     // hitam
 					*(fbp + location + 2) = 0;    // hitam
-					*(fbp + location + 3) = 0;      // No transparency	
+					*(fbp + location + 3) = 0;      // No transparency
 				//}
 			}
 		}
+		int xx;
+		int yy;
+		draw_line(1000,500,1200,600);
+
 		//menulis pesawat ke framebuffer
 		int max_length = (int)(vinfo.xres);
 		for (y = current_y_pesawat; y < current_y_pesawat+charheight; y++) {
@@ -119,6 +208,7 @@ int main() {
 				}
 			}
 		}
+
 		//menggambar blok1
 		for (y = current_y_blok1; y < current_y_blok1+height_blok1; y++) {
 			if (y >= 0) {
@@ -142,7 +232,7 @@ int main() {
 	munmap(fbp, screensize);
 
 	close(fbfd);
-	
+
 	return 0;
 
 }
