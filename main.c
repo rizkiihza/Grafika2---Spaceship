@@ -158,6 +158,10 @@ int main() {
 	int first_y_blok1 = (int)(vinfo.yres)-200;
 	int first_x_blok1 = (int)(vinfo.xres)/2;
 
+	//BLOK KANAN
+	int kiri_y_blok1 = (int)(vinfo.yres)-200;
+	int kiri_x_blok1 = (int)(vinfo.xres)/2;
+
 	int height_blok1 = 80;
 	int width_blok1 = 20;
 	int current_y_pesawat = first_y_pesawat; //y untuk karakter sementara
@@ -187,9 +191,12 @@ int main() {
 				//}
 			}
 		}
-		int xx;
-		int yy;
-		draw_line(1000,500,1200,600);
+		
+		for(int ii = 0; ii < 20; i++) {
+			draw_line(kiri_x_blok1+ii, kiri_y_blok1, kiri_x_blok1+ii + 100, kiri_y_blok1 + 200)
+		}
+		kiri_x_blok1 -= 30;
+		kiri_y_blok1 -= 60;
 
 		//menulis pesawat ke framebuffer
 		int max_length = (int)(vinfo.xres);
