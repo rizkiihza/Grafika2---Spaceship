@@ -189,7 +189,7 @@ int main() {
 	int current_x_pesawat = first_x_pesawat; //x untuk karakter sementara
 	int current_y_blok1 = first_y_blok1;
 	int current_x_blok1 = first_x_blok1;
-	for (i = 0; i < 25; i++) {
+	while(1) {
 		//menghitamkan layar
 		for (y = 0; y < 760; y++) {
 			for (x = 0; x < vinfo.xres; x++) {
@@ -217,15 +217,25 @@ int main() {
 		for(int ii = 0; ii < 20; ii++) {
 			draw_line(kiri_x_blok1+ii-100, kiri_y_blok1, kiri_x_blok1+ii, kiri_y_blok1+200, &green);
 		}
-		kiri_x_blok1 -= 30;
-		kiri_y_blok1 -= 60;
+		if(kiri_y_blok1 < vinfo.yres){
+			kiri_x_blok1 -= 30;
+			kiri_y_blok1 -= 60;
+		}else{
+			kiri_x_blok1 = (int)(vinfo.xres)/2;
+			kiri_y_blok1 = (int)(vinfo.yres)-200;
+		}
 
 		// 	BLOK KANAN
 		for(int ii = 0; ii < 10; ii++) {
 			draw_line(kanan_x_blok1+ii, kanan_y_blok1+100, kanan_x_blok1+ii+100, kanan_y_blok1-100, &white);
 		}
-		kanan_x_blok1 += 30;
-		kanan_y_blok1 -= 60;
+		if(kanan_y_blok1 < vinfo.yres){
+			kanan_x_blok1 += 30;
+			kanan_y_blok1 -= 60;
+		}else{
+			kanan_y_blok1 = (int)(vinfo.yres)-200;
+			kanan_x_blok1 = (int)(vinfo.xres)/2;
+		}
 
 		//menulis pesawat ke framebuffer
 		int max_length = (int)(vinfo.xres);
@@ -261,7 +271,11 @@ int main() {
 			}
 		}
 		current_x_pesawat -= 60;
-		current_y_blok1 -= 60;
+		if(current_y_blok1 < vinfo.yres){
+			current_y_blok1 -= 60;
+		}else{
+			current_y_blok1 = (int)(vinfo.yres)-200;
+		}
 		usleep(500000);
 	}
 
